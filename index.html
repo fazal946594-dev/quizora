@@ -1,0 +1,642 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f7f3">
+  <meta name="description" content="Sign up, explore fun quizzes, and see how much you know.">
+  <title>Quizora — Make curiosity a habit</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #20261f;
+      --muted: #777d74;
+      --paper: #f6f7f3;
+      --white: #fff;
+      --green: #316f51;
+      --green-dark: #25573e;
+      --lime: #d9f36a;
+      --line: #e8eae3;
+      --shadow: 0 18px 55px rgba(37, 49, 37, .08);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--paper); color: var(--ink); min-width: 320px; }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    .shell { width: min(1160px, calc(100% - 48px)); margin: 0 auto; }
+    .topbar { height: 82px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(32,38,31,.07); }
+    .brand { display: inline-flex; align-items: center; gap: 10px; border: 0; padding: 0; background: none; color: var(--ink); font-size: 21px; font-weight: 850; letter-spacing: -1px; }
+    .brand-mark { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 11px; background: var(--green); color: white; font-size: 19px; }
+    .nav { display: flex; align-items: center; gap: 30px; color: #555c52; font-size: 13px; font-weight: 650; }
+    .nav a { color: inherit; text-decoration: none; }
+    .nav a:hover { color: var(--green); }
+    .nav-actions { display: flex; align-items: center; gap: 11px; }
+    .button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 43px; padding: 0 19px; border: 1px solid transparent; border-radius: 9px; background: var(--green); color: #fff; font-size: 13px; font-weight: 750; transition: background .18s, transform .18s; }
+    .button:hover { background: var(--green-dark); transform: translateY(-1px); }
+    .button:focus-visible, .quiet-button:focus-visible, .answer:focus-visible, .brand:focus-visible, .icon-button:focus-visible { outline: 3px solid #9fbd68; outline-offset: 3px; }
+    .button-outline { background: transparent; color: var(--ink); border-color: #e1e5db; }
+    .button-outline:hover { background: var(--white); color: var(--ink); }
+    .button-lime { background: var(--lime); color: #253025; }
+    .button-lime:hover { background: #cce957; }
+    .small-button { min-height: 37px; padding: 0 14px; font-size: 12px; }
+    .profile-button { display: inline-flex; align-items: center; gap: 9px; border: 0; background: transparent; color: var(--ink); font-weight: 700; font-size: 12px; }
+    .avatar { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 50%; overflow: hidden; background: #e5edda; color: var(--green); font-size: 12px; font-weight: 800; }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .hero { display: grid; grid-template-columns: 1.02fr .98fr; align-items: center; gap: 50px; min-height: 422px; padding: 43px 0 37px; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 8px; color: var(--green); font-size: 11px; font-weight: 800; letter-spacing: 1.35px; text-transform: uppercase; }
+    .eyebrow-dot { width: 7px; height: 7px; border-radius: 50%; background: #87ad51; }
+    h1 { margin: 19px 0 14px; max-width: 520px; font-size: clamp(43px, 5vw, 65px); line-height: .99; letter-spacing: -4px; font-weight: 760; }
+    h1 span { color: var(--green); }
+    .hero-copy { max-width: 445px; color: var(--muted); font-size: 15px; line-height: 1.75; }
+    .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 25px; }
+    .social-proof { display: flex; align-items: center; gap: 12px; margin-top: 26px; color: var(--muted); font-size: 11px; }
+    .avatar-stack { display: flex; }
+    .avatar-stack .avatar { width: 27px; height: 27px; margin-right: -7px; border: 2px solid var(--paper); font-size: 10px; }
+    .proof-stars { color: #dd9d47; letter-spacing: 1px; }
+    .hero-art { position: relative; display: grid; min-height: 334px; place-items: center; overflow: hidden; border-radius: 22px; background: #e9efdf; }
+    .hero-art:before, .hero-art:after { position: absolute; content: ""; border-radius: 50%; }
+    .hero-art:before { width: 242px; height: 242px; right: 37px; top: -111px; background: #d7e7bd; }
+    .hero-art:after { width: 185px; height: 185px; left: -77px; bottom: -96px; background: #d6e5c6; }
+    .art-card { position: relative; z-index: 1; width: min(325px, 77%); padding: 23px; border: 1px solid rgba(255,255,255,.8); border-radius: 17px; background: rgba(255,255,255,.92); box-shadow: 0 23px 65px rgba(43,70,47,.15); transform: rotate(-2deg); }
+    .art-top { display: flex; justify-content: space-between; color: var(--muted); font-size: 10px; font-weight: 750; text-transform: uppercase; letter-spacing: .8px; }
+    .art-badge { padding: 5px 8px; border-radius: 20px; background: #edf5dd; color: var(--green); }
+    .art-question { margin: 18px 0 15px; font-size: 17px; line-height: 1.4; font-weight: 750; letter-spacing: -.4px; }
+    .art-option { margin-top: 8px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; color: #62685f; font-size: 11px; }
+    .art-option.active { border-color: #94b96e; background: #f2f8e9; color: var(--green); font-weight: 700; }
+    .art-progress { margin-top: 18px; height: 5px; border-radius: 10px; background: #edf0e9; }
+    .art-progress span { display: block; width: 62%; height: 100%; border-radius: inherit; background: var(--green); }
+    .float-note { position: absolute; right: 8%; bottom: 14%; z-index: 2; padding: 11px 14px; border-radius: 12px; background: var(--lime); box-shadow: 0 9px 24px rgba(43,70,47,.11); color: #34442e; font-size: 11px; font-weight: 800; transform: rotate(4deg); }
+    .section { padding: 28px 0 69px; scroll-margin-top: 24px; }
+    .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 20px; margin-bottom: 21px; }
+    .section-heading h2 { margin: 9px 0 0; font-size: 26px; letter-spacing: -1.2px; }
+    .section-heading p { margin: 7px 0 0; color: var(--muted); font-size: 12px; }
+    .quiet-button { padding: 8px 0; border: 0; background: none; color: var(--green); font-size: 12px; font-weight: 750; }
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 13px; margin-bottom: 25px; }
+    .stat { padding: 15px 17px; border: 1px solid var(--line); border-radius: 12px; background: var(--white); }
+    .stat-label { color: var(--muted); font-size: 10px; font-weight: 700; }
+    .stat-value { display: block; margin-top: 6px; font-size: 22px; letter-spacing: -.7px; font-weight: 780; }
+    .category-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 13px; }
+    .category { position: relative; min-height: 151px; padding: 17px 16px 14px; overflow: hidden; border: 1px solid var(--line); border-radius: 12px; background: var(--white); text-align: left; transition: transform .17s, box-shadow .17s, border-color .17s; }
+    .category:hover { transform: translateY(-3px); border-color: #cbd8c3; box-shadow: var(--shadow); }
+    .category-icon { display: grid; place-items: center; width: 38px; height: 38px; margin-bottom: 12px; border-radius: 11px; font-size: 19px; }
+    .category strong { display: block; font-size: 12px; letter-spacing: -.1px; }
+    .category small { display: block; margin-top: 5px; color: var(--muted); font-size: 10px; }
+    .category .arrow { position: absolute; right: 15px; bottom: 14px; color: #92998e; font-size: 14px; }
+    .quiz-panel { display: none; margin: 0 0 23px; padding: 23px; border: 1px solid var(--line); border-radius: 14px; background: var(--white); }
+    .quiz-panel.visible { display: block; }
+    .quiz-top { display: flex; justify-content: space-between; align-items: start; gap: 12px; margin-bottom: 19px; }
+    .quiz-top h3 { margin: 0; font-size: 20px; letter-spacing: -.7px; }
+    .quiz-meta { margin-top: 6px; color: var(--muted); font-size: 11px; }
+    .quiz-close { border: 0; background: none; color: #71786f; font-size: 20px; }
+    .quiz-progress-copy { display: flex; justify-content: space-between; margin-bottom: 7px; color: var(--muted); font-size: 10px; }
+    .quiz-progress { height: 6px; overflow: hidden; border-radius: 10px; background: #edf0e9; }
+    .quiz-progress span { display: block; width: 0; height: 100%; border-radius: inherit; background: var(--green); transition: width .2s; }
+    .question { margin: 21px 0 15px; font-size: 19px; line-height: 1.45; font-weight: 740; letter-spacing: -.45px; }
+    .answers { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+    .answer { min-height: 43px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: #fff; color: #414940; text-align: left; font-size: 12px; transition: background .15s, border-color .15s; }
+    .answer:hover:not(:disabled) { border-color: #99b788; background: #f7faF2; }
+    .answer.correct { border-color: #73a568; background: #f0f7eb; color: #316f51; font-weight: 750; }
+    .answer.incorrect { border-color: #dc9991; background: #fff3f1; color: #a54339; }
+    .answer:disabled { cursor: default; }
+    .quiz-footer { display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-top: 17px; }
+    .quiz-feedback { min-height: 19px; color: var(--muted); font-size: 11px; }
+    .result { padding: 19px 5px 7px; text-align: center; }
+    .result-emoji { font-size: 42px; }
+    .result h3 { margin: 8px 0; font-size: 24px; letter-spacing: -1px; }
+    .result p { color: var(--muted); font-size: 13px; line-height: 1.6; }
+    .result .button { margin-top: 9px; }
+    .how-section { display: grid; grid-template-columns: .8fr 1.2fr; gap: 50px; align-items: center; padding: 26px 0 66px; border-top: 1px solid var(--line); }
+    .how-section h2 { margin: 10px 0; font-size: 30px; letter-spacing: -1.5px; }
+    .how-section p { max-width: 370px; color: var(--muted); font-size: 13px; line-height: 1.7; }
+    .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+    .step { padding: 16px; border-radius: 11px; background: #fff; }
+    .step-number { color: var(--green); font-size: 10px; font-weight: 850; letter-spacing: .7px; }
+    .step h3 { margin: 11px 0 5px; font-size: 12px; }
+    .step p { margin: 0; font-size: 10px; line-height: 1.6; }
+    footer { padding: 22px 0; border-top: 1px solid var(--line); color: var(--muted); font-size: 10px; }
+    .footer-inner { display: flex; justify-content: space-between; gap: 12px; }
+    .modal-backdrop { position: fixed; inset: 0; z-index: 10; display: none; place-items: center; padding: 18px; background: rgba(22,29,23,.47); }
+    .modal-backdrop.visible { display: grid; }
+    .modal { position: relative; width: min(430px, 100%); max-height: min(92vh, 720px); overflow: auto; padding: 28px; border-radius: 16px; background: #fff; box-shadow: 0 25px 80px rgba(0,0,0,.2); }
+    .modal-close { position: absolute; top: 17px; right: 17px; width: 31px; height: 31px; border: 0; border-radius: 8px; background: #f3f5f0; color: #60675e; font-size: 18px; }
+    .modal-mark { width: 39px; height: 39px; display: grid; place-items: center; border-radius: 12px; background: var(--green); color: white; font-weight: 800; }
+    .modal h2 { margin: 17px 0 5px; font-size: 23px; letter-spacing: -1px; }
+    .modal-intro { margin: 0 0 21px; color: var(--muted); font-size: 12px; line-height: 1.6; }
+    .form-field { display: block; margin-top: 13px; color: #41483f; font-size: 11px; font-weight: 700; }
+    .form-field input { display: block; width: 100%; height: 43px; margin-top: 7px; padding: 0 12px; border: 1px solid #e2e6dd; border-radius: 8px; background: white; color: var(--ink); font-size: 13px; }
+    .form-field input:focus { border-color: #89a97a; outline: 3px solid rgba(137,169,122,.16); }
+    .picture-row { display: flex; align-items: center; gap: 12px; margin: 17px 0 5px; }
+    .picture-row .avatar { width: 43px; height: 43px; font-size: 15px; }
+    .picture-help { color: var(--muted); font-size: 10px; line-height: 1.5; }
+    .picture-help label { display: inline-block; color: var(--green); font-weight: 750; cursor: pointer; }
+    .picture-help input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+    .form-error { min-height: 18px; margin: 9px 0 0; color: #ad4036; font-size: 11px; }
+    .form-submit { width: 100%; margin-top: 5px; }
+    .switch-auth { margin: 17px 0 0; color: var(--muted); text-align: center; font-size: 11px; }
+    .switch-auth button { border: 0; padding: 0; background: none; color: var(--green); font-weight: 750; }
+    .local-note { margin-top: 15px; padding: 10px; border-radius: 8px; background: #f5f7f1; color: #70776e; font-size: 10px; line-height: 1.5; }
+    @media (max-width: 900px) {
+      .hero { gap: 25px; }
+      .category-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .nav { gap: 17px; }
+    }
+    @media (max-width: 650px) {
+      .shell { width: min(100% - 32px, 500px); }
+      .topbar { height: 68px; }
+      .nav { display: none; }
+      .brand { font-size: 19px; }
+      .nav-actions { gap: 7px; }
+      .nav-actions .button { min-height: 37px; padding: 0 12px; font-size: 11px; }
+      .profile-button { gap: 5px; font-size: 0; }
+      .hero { grid-template-columns: 1fr; gap: 25px; padding: 38px 0 27px; }
+      h1 { max-width: 440px; font-size: clamp(45px, 12vw, 59px); letter-spacing: -3px; }
+      .hero-copy { font-size: 13px; }
+      .hero-art { min-height: 285px; }
+      .art-card { width: min(300px, 78%); }
+      .section { padding: 25px 0 50px; }
+      .section-heading h2 { font-size: 23px; }
+      .category-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+      .category { min-height: 141px; padding: 14px; }
+      .stats { gap: 7px; }
+      .stat { padding: 12px 10px; }
+      .stat-value { font-size: 19px; }
+      .stat-label { font-size: 9px; }
+      .quiz-panel { padding: 17px; }
+      .answers { grid-template-columns: 1fr; }
+      .how-section { grid-template-columns: 1fr; gap: 19px; padding-bottom: 43px; }
+      .steps { gap: 8px; }
+      .step { padding: 12px 10px; }
+      .step h3 { font-size: 11px; }
+      .footer-inner { flex-direction: column; }
+      .modal { padding: 24px 21px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="shell topbar">
+    <button class="brand" id="brandHome" aria-label="Quizora home"><span class="brand-mark">Q</span>quizora</button>
+    <nav class="nav" aria-label="Main navigation">
+      <a href="#quizzes">Explore quizzes</a>
+      <a href="#how-it-works">How it works</a>
+    </nav>
+    <div class="nav-actions" id="navActions">
+      <button class="button button-outline small-button" id="loginButton">Log in</button>
+      <button class="button small-button" id="signupButton">Sign up free <span aria-hidden="true">→</span></button>
+    </div>
+  </header>
+
+  <main>
+    <section class="shell hero">
+      <div>
+        <div class="eyebrow"><span class="eyebrow-dot"></span> A little curious? You're in the right place.</div>
+        <h1>Make curiosity<br>a <span>daily habit.</span></h1>
+        <p class="hero-copy">Quick, feel-good quizzes for everything you're curious about. Pick a topic, play a round, and surprise yourself with what you know.</p>
+        <div class="hero-actions">
+          <button class="button" id="heroCta">Create your free account <span aria-hidden="true">→</span></button>
+          <button class="button button-outline" id="browseCta">Explore topics</button>
+        </div>
+        <div class="social-proof">
+          <div class="avatar-stack" aria-hidden="true"><span class="avatar">J</span><span class="avatar">M</span><span class="avatar">A</span><span class="avatar">+</span></div>
+          <span><span class="proof-stars">★★★★★</span> &nbsp;A fun little challenge, every day.</span>
+        </div>
+      </div>
+      <div class="hero-art" aria-label="A sample quiz question">
+        <div class="art-card">
+          <div class="art-top"><span>Quick quiz · Science</span><span class="art-badge">1 of 5</span></div>
+          <div class="art-question">Which planet is known as the Red Planet?</div>
+          <div class="art-option">A &nbsp; Venus</div>
+          <div class="art-option active">B &nbsp; Mars &nbsp; ✓</div>
+          <div class="art-option">C &nbsp; Jupiter</div>
+          <div class="art-progress"><span></span></div>
+        </div>
+        <div class="float-note">Nice one! ✨</div>
+      </div>
+    </section>
+
+    <section class="shell section" id="quizzes">
+      <div id="welcomeStats" hidden>
+        <div class="section-heading">
+          <div><div class="eyebrow"><span class="eyebrow-dot"></span> Your little learning corner</div><h2 id="welcomeHeading">Welcome back!</h2><p>Every round counts. Ready for another?</p></div>
+          <button class="quiet-button" id="logoutButton">Log out</button>
+        </div>
+        <div class="stats">
+          <div class="stat"><span class="stat-label">Quizzes played</span><strong class="stat-value" id="statPlayed">0</strong></div>
+          <div class="stat"><span class="stat-label">Best score</span><strong class="stat-value" id="statBest">—</strong></div>
+          <div class="stat"><span class="stat-label">Topics explored</span><strong class="stat-value" id="statTopics">0</strong></div>
+        </div>
+      </div>
+      <div class="section-heading">
+        <div><div class="eyebrow"><span class="eyebrow-dot"></span> Find your next favorite</div><h2>Something for every curious mind.</h2><p>Choose a topic. Your next five-question challenge is waiting.</p></div>
+        <button class="quiet-button" id="allTopicsButton">10 topics &nbsp;↗</button>
+      </div>
+      <div class="quiz-panel" id="quizPanel" aria-live="polite"></div>
+      <div class="category-grid" id="categoryGrid"></div>
+    </section>
+
+    <section class="shell how-section" id="how-it-works">
+      <div><div class="eyebrow"><span class="eyebrow-dot"></span> No pressure, just play</div><h2>Three steps.<br>One happy brain.</h2><p>Your curiosity doesn't need a study plan. Just pick something that sounds fun and see where it takes you.</p></div>
+      <div class="steps">
+        <article class="step"><span class="step-number">01 / JOIN IN</span><h3>Make it yours</h3><p>Create your profile and add a photo if you'd like.</p></article>
+        <article class="step"><span class="step-number">02 / PICK A TOPIC</span><h3>Follow a hunch</h3><p>From science to sports, there's always more to discover.</p></article>
+        <article class="step"><span class="step-number">03 / HAVE A GO</span><h3>Enjoy the little wins</h3><p>Play five questions, see your score, and try another.</p></article>
+      </div>
+    </section>
+  </main>
+  <footer><div class="shell footer-inner"><span>© 2026 Quizora. Stay curious. 🌱</span><span>Your profile and scores stay in this browser on this device.</span></div></footer>
+
+  <div class="modal-backdrop" id="authBackdrop" role="presentation">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="authTitle" aria-describedby="authIntro">
+      <button class="modal-close" id="modalClose" aria-label="Close">×</button>
+      <div class="modal-mark">Q</div>
+      <h2 id="authTitle">A new little adventure.</h2>
+      <p class="modal-intro" id="authIntro">Create a free profile to play quizzes and keep track of your scores.</p>
+      <form id="authForm" novalidate>
+        <label class="form-field" id="nameField">Your name<input id="nameInput" name="name" autocomplete="name" maxlength="40" placeholder="What should we call you?"></label>
+        <label class="form-field">Email address<input id="emailInput" name="email" type="email" autocomplete="email" maxlength="120" placeholder="you@example.com" required></label>
+        <div class="picture-row" id="pictureRow">
+          <div class="avatar" id="picturePreview">Q</div>
+          <div class="picture-help">Make your profile yours.<br><label for="pictureInput">Add a profile photo</label><input id="pictureInput" type="file" accept="image/*" aria-label="Choose a profile photo"></div>
+        </div>
+        <p class="form-error" id="formError" role="alert"></p>
+        <button class="button form-submit" id="submitAuth" type="submit">Create my account <span aria-hidden="true">→</span></button>
+      </form>
+      <p class="switch-auth" id="authSwitch">Already have a profile? <button type="button" id="switchAuthButton">Log in</button></p>
+      <div class="local-note">This demo saves your profile and quiz scores only in this browser. No password is needed or stored.</div>
+    </section>
+  </div>
+
+  <script>
+    const quizzes = [
+      { name: "General knowledge", icon: "💡", color: "#f1edff", questions: [
+        { q: "How many sides does a hexagon have?", a: ["Five", "Six", "Seven", "Eight"], correct: 1 },
+        { q: "Which is the largest ocean on Earth?", a: ["Atlantic", "Indian", "Arctic", "Pacific"], correct: 3 },
+        { q: "What is the capital of Japan?", a: ["Seoul", "Tokyo", "Beijing", "Bangkok"], correct: 1 },
+        { q: "How many colors are traditionally in a rainbow?", a: ["Five", "Six", "Seven", "Eight"], correct: 2 },
+        { q: "Which animal is the tallest in the world?", a: ["Elephant", "Ostrich", "Giraffe", "Camel"], correct: 2 }
+      ]},
+      { name: "Science", icon: "🔬", color: "#e8f4ee", questions: [
+        { q: "Which planet is known as the Red Planet?", a: ["Venus", "Mars", "Jupiter", "Mercury"], correct: 1 },
+        { q: "What gas do plants absorb from the atmosphere?", a: ["Oxygen", "Nitrogen", "Carbon dioxide", "Helium"], correct: 2 },
+        { q: "What is the center of an atom called?", a: ["Nucleus", "Orbit", "Cell", "Core"], correct: 0 },
+        { q: "At sea level, what is the boiling point of water in °C?", a: ["50", "90", "100", "120"], correct: 2 },
+        { q: "Which force keeps us on the ground?", a: ["Magnetism", "Gravity", "Friction", "Pressure"], correct: 1 }
+      ]},
+      { name: "Mathematics", icon: "➗", color: "#fff0df", questions: [
+        { q: "What is 12 × 8?", a: ["86", "92", "96", "108"], correct: 2 },
+        { q: "What is the square root of 81?", a: ["7", "8", "9", "10"], correct: 2 },
+        { q: "How many degrees are in a right angle?", a: ["45", "90", "120", "180"], correct: 1 },
+        { q: "What is 15% of 200?", a: ["15", "20", "30", "45"], correct: 2 },
+        { q: "Which of these is a prime number?", a: ["21", "27", "29", "33"], correct: 2 }
+      ]},
+      { name: "History", icon: "🏺", color: "#fbe9e7", questions: [
+        { q: "The ancient pyramids of Giza are in which country?", a: ["Greece", "Egypt", "Mexico", "India"], correct: 1 },
+        { q: "In which year did the first Moon landing take place?", a: ["1959", "1965", "1969", "1972"], correct: 2 },
+        { q: "The Renaissance began in which European country?", a: ["France", "Italy", "Spain", "Germany"], correct: 1 },
+        { q: "Which city was buried by the eruption of Mount Vesuvius?", a: ["Athens", "Pompeii", "Rome", "Carthage"], correct: 1 },
+        { q: "Who was the first person to travel into space?", a: ["Neil Armstrong", "Yuri Gagarin", "Buzz Aldrin", "John Glenn"], correct: 1 }
+      ]},
+      { name: "Geography", icon: "🌍", color: "#e7f1ff", questions: [
+        { q: "Which is the largest continent by area?", a: ["Africa", "Europe", "Asia", "South America"], correct: 2 },
+        { q: "What is the capital of Australia?", a: ["Sydney", "Melbourne", "Canberra", "Perth"], correct: 2 },
+        { q: "The Sahara Desert is on which continent?", a: ["Asia", "Africa", "Australia", "South America"], correct: 1 },
+        { q: "Which country is famous for the maple leaf on its flag?", a: ["Canada", "Sweden", "Finland", "Denmark"], correct: 0 },
+        { q: "Which river flows through London?", a: ["Seine", "Danube", "Thames", "Rhine"], correct: 2 }
+      ]},
+      { name: "Technology", icon: "💻", color: "#e6f4f4", questions: [
+        { q: "What does “www” stand for in a web address?", a: ["World Wide Web", "Web World Window", "Wide Web Wire", "World Web Works"], correct: 0 },
+        { q: "Which two digits are used in binary code?", a: ["0 and 1", "1 and 2", "2 and 3", "0 and 9"], correct: 0 },
+        { q: "What does a computer's CPU mainly do?", a: ["Print pages", "Process instructions", "Store paper", "Connect a mouse"], correct: 1 },
+        { q: "Which of these is a programming language?", a: ["Python", "Cougar", "Falcon", "Lizard"], correct: 0 },
+        { q: "What does GPS help you find?", a: ["Your location", "Internet speed", "Screen size", "Battery health"], correct: 0 }
+      ]},
+      { name: "Literature", icon: "📚", color: "#f8ebf4", questions: [
+        { q: "Who wrote “Alice's Adventures in Wonderland”?", a: ["Lewis Carroll", "J. R. R. Tolkien", "Charles Dickens", "Mark Twain"], correct: 0 },
+        { q: "What is the name of Sherlock Holmes's close friend?", a: ["Watson", "Hudson", "Moriarty", "Lestrade"], correct: 0 },
+        { q: "Who wrote “Romeo and Juliet”?", a: ["Jane Austen", "William Shakespeare", "Oscar Wilde", "George Orwell"], correct: 1 },
+        { q: "Which of these is a famous detective created by Agatha Christie?", a: ["Hercule Poirot", "Robin Hood", "Peter Pan", "Dracula"], correct: 0 },
+        { q: "What do we call the main character in a story?", a: ["Narrator", "Protagonist", "Publisher", "Editor"], correct: 1 }
+      ]},
+      { name: "English & words", icon: "✍️", color: "#fff2df", questions: [
+        { q: "Which word is a synonym for “rapid”?", a: ["Gentle", "Quick", "Quiet", "Careful"], correct: 1 },
+        { q: "Which word is spelled correctly?", a: ["Necessary", "Necesary", "Neccessary", "Necessery"], correct: 0 },
+        { q: "What is the plural of “mouse”?", a: ["Mouses", "Mices", "Mice", "Mouse"], correct: 2 },
+        { q: "Which of these is an adjective?", a: ["Happily", "Jump", "Bright", "Quickly"], correct: 2 },
+        { q: "What is the opposite of “ancient”?", a: ["Historic", "Modern", "Old", "Early"], correct: 1 }
+      ]},
+      { name: "Sports", icon: "🏅", color: "#edf2df", questions: [
+        { q: "How many players does a soccer team have on the field?", a: ["9", "10", "11", "12"], correct: 2 },
+        { q: "In which sport would you perform a slam dunk?", a: ["Tennis", "Basketball", "Volleyball", "Rugby"], correct: 1 },
+        { q: "How many rings are on the Olympic flag?", a: ["Four", "Five", "Six", "Seven"], correct: 1 },
+        { q: "Wimbledon is a famous tournament in which sport?", a: ["Tennis", "Golf", "Cricket", "Hockey"], correct: 0 },
+        { q: "How long is a marathon, approximately?", a: ["26.2 miles", "20 miles", "30 miles", "13.1 miles"], correct: 0 }
+      ]},
+      { name: "Logic & riddles", icon: "🧩", color: "#edeafa", questions: [
+        { q: "What comes next: 2, 4, 8, 16, …?", a: ["20", "24", "30", "32"], correct: 3 },
+        { q: "A dozen eggs minus four eggs equals how many?", a: ["4", "6", "8", "10"], correct: 2 },
+        { q: "Which doesn't belong: triangle, square, circle, carrot?", a: ["Triangle", "Square", "Circle", "Carrot"], correct: 3 },
+        { q: "If yesterday was Monday, what day is tomorrow?", a: ["Tuesday", "Wednesday", "Thursday", "Sunday"], correct: 1 },
+        { q: "A clock shows 3:00. What is the angle between its hands?", a: ["45°", "90°", "120°", "180°"], correct: 1 }
+      ]}
+    ];
+
+    const usersKey = "quizora.users.v1";
+    const activeKey = "quizora.active.v1";
+    let activeUser = null;
+    let selectedQuiz = null;
+    let questionIndex = 0;
+    let score = 0;
+    let selectedPhoto = "";
+    let authMode = "register";
+
+    const $ = (selector) => document.querySelector(selector);
+    const safeRead = (key, fallback) => {
+      try {
+        const value = localStorage.getItem(key);
+        return value ? JSON.parse(value) : fallback;
+      } catch (error) {
+        console.error("Unable to read saved Quizora data.", error);
+        return fallback;
+      }
+    };
+    const getUsers = () => safeRead(usersKey, {});
+    const initials = (name) => (name || "Q").trim().split(/\s+/).map((part) => part[0]).join("").slice(0, 2).toUpperCase();
+    const esc = (value) => String(value).replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]);
+
+    function persistProfile(profile) {
+      try {
+        const users = getUsers();
+        users[profile.email] = profile;
+        localStorage.setItem(usersKey, JSON.stringify(users));
+        localStorage.setItem(activeKey, profile.email);
+        activeUser = profile;
+        renderUser();
+        return true;
+      } catch (error) {
+        console.error("Unable to save Quizora profile.", error);
+        $("#formError").textContent = "We couldn't save your profile. Your browser may be out of storage space.";
+        return false;
+      }
+    }
+
+    function renderAvatar(container, profile) {
+      if (profile && profile.photo) {
+        container.innerHTML = `<img src="${profile.photo}" alt="">`;
+      } else {
+        container.textContent = initials(profile && profile.name);
+      }
+    }
+
+    function renderUser() {
+      const actions = $("#navActions");
+      if (!activeUser) {
+        $("#welcomeStats").hidden = true;
+        actions.innerHTML = '<button class="button button-outline small-button" id="loginButton">Log in</button><button class="button small-button" id="signupButton">Sign up free <span aria-hidden="true">→</span></button>';
+        $("#loginButton").addEventListener("click", () => openAuth("login"));
+        $("#signupButton").addEventListener("click", () => openAuth("register"));
+        $("#heroCta").textContent = "Create your free account →";
+        return;
+      }
+      actions.innerHTML = '<button class="profile-button" id="profileButton"><span class="avatar" id="navAvatar"></span><span id="navName"></span></button>';
+      renderAvatar($("#navAvatar"), activeUser);
+      $("#navName").textContent = activeUser.name;
+      $("#profileButton").addEventListener("click", () => openAuth("profile"));
+      $("#welcomeStats").hidden = false;
+      $("#welcomeHeading").textContent = `Welcome, ${activeUser.name.split(/\s+/)[0]}!`;
+      const results = Array.isArray(activeUser.results) ? activeUser.results : [];
+      $("#statPlayed").textContent = results.length;
+      $("#statBest").textContent = results.length ? `${Math.max(...results.map((result) => result.score))}/5` : "—";
+      $("#statTopics").textContent = new Set(results.map((result) => result.topic)).size;
+      $("#heroCta").textContent = "Pick a quiz and play →";
+      $("#logoutButton").onclick = () => {
+        localStorage.removeItem(activeKey);
+        activeUser = null;
+        renderUser();
+      };
+    }
+
+    function renderCategories() {
+      $("#categoryGrid").innerHTML = quizzes.map((quiz, index) => `
+        <button class="category" data-quiz="${index}" aria-label="Start ${esc(quiz.name)} quiz">
+          <span class="category-icon" style="background:${quiz.color}" aria-hidden="true">${quiz.icon}</span>
+          <strong>${esc(quiz.name)}</strong><small>5 questions · about 2 min</small><span class="arrow" aria-hidden="true">↗</span>
+        </button>`).join("");
+      $("#categoryGrid").addEventListener("click", (event) => {
+        const button = event.target.closest("[data-quiz]");
+        if (button) startQuiz(Number(button.dataset.quiz));
+      });
+    }
+
+    function openAuth(mode) {
+      authMode = mode;
+      selectedPhoto = "";
+      $("#pictureInput").value = "";
+      $("#formError").textContent = "";
+      $("#authForm").reset();
+      $("#authBackdrop").classList.add("visible");
+      document.body.style.overflow = "hidden";
+      updateAuthForm();
+      if (mode === "profile" && activeUser) {
+        $("#nameInput").value = activeUser.name;
+        $("#emailInput").value = activeUser.email;
+        selectedPhoto = activeUser.photo || "";
+        renderAvatar($("#picturePreview"), activeUser);
+      } else {
+        $("#picturePreview").textContent = "Q";
+      }
+      window.setTimeout(() => (mode === "register" || mode === "profile" ? $("#nameInput") : $("#emailInput")).focus(), 0);
+    }
+
+    function closeAuth() {
+      $("#authBackdrop").classList.remove("visible");
+      document.body.style.overflow = "";
+    }
+
+    function updateAuthForm() {
+      const isRegister = authMode === "register";
+      const isProfile = authMode === "profile";
+      $("#authTitle").textContent = isProfile ? "Your profile." : isRegister ? "A new little adventure." : "Lovely to have you back.";
+      $("#authIntro").textContent = isProfile ? "Update your name or choose a profile photo." : isRegister ? "Create a free profile to play quizzes and keep track of your scores." : "Enter the email address you used to create your profile.";
+      $("#nameField").hidden = !isProfile && !isRegister;
+      $("#pictureRow").hidden = !isProfile && !isRegister;
+      $("#submitAuth").innerHTML = isProfile ? "Save profile" : isRegister ? 'Create my account <span aria-hidden="true">→</span>' : "Log in";
+      $("#authSwitch").hidden = isProfile;
+      $("#authSwitch").innerHTML = isRegister
+        ? 'Already have a profile? <button type="button" id="switchAuthButton">Log in</button>'
+        : 'New around here? <button type="button" id="switchAuthButton">Create a profile</button>';
+      $("#switchAuthButton").addEventListener("click", () => openAuth(isRegister ? "login" : "register"));
+      $("#nameInput").required = isRegister || isProfile;
+      $("#nameInput").disabled = authMode === "login";
+      $("#emailInput").disabled = isProfile;
+    }
+
+    function startQuiz(index) {
+      if (!activeUser) {
+        openAuth("register");
+        $("#formError").textContent = "Create your free profile to start a quiz.";
+        return;
+      }
+      selectedQuiz = quizzes[index];
+      questionIndex = 0;
+      score = 0;
+      $("#quizPanel").classList.add("visible");
+      renderQuestion();
+      $("#quizPanel").scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    function renderQuestion() {
+      const panel = $("#quizPanel");
+      const question = selectedQuiz.questions[questionIndex];
+      const progress = Math.round((questionIndex / selectedQuiz.questions.length) * 100);
+      panel.innerHTML = `
+        <div class="quiz-top"><div><h3>${esc(selectedQuiz.name)}</h3><div class="quiz-meta">${selectedQuiz.icon} &nbsp; Five quick questions · Take your time</div></div><button class="quiz-close" id="closeQuiz" aria-label="Close quiz">×</button></div>
+        <div class="quiz-progress-copy"><span>Question ${questionIndex + 1} of ${selectedQuiz.questions.length}</span><span>${progress}%</span></div>
+        <div class="quiz-progress" role="progressbar" aria-label="Quiz progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${progress}"><span style="width:${progress}%"></span></div>
+        <p class="question">${esc(question.q)}</p>
+        <div class="answers">${question.a.map((answer, index) => `<button class="answer" data-answer="${index}">${String.fromCharCode(65 + index)}. &nbsp; ${esc(answer)}</button>`).join("")}</div>
+        <div class="quiz-footer"><span class="quiz-feedback" id="quizFeedback" aria-live="polite">Choose the answer that feels right.</span><button class="button small-button" id="nextQuestion" disabled>Next question →</button></div>`;
+      $("#closeQuiz").addEventListener("click", closeQuiz);
+      $("#nextQuestion").addEventListener("click", advanceQuiz);
+      panel.querySelectorAll("[data-answer]").forEach((button) => button.addEventListener("click", () => chooseAnswer(Number(button.dataset.answer))));
+    }
+
+    function chooseAnswer(choice) {
+      const question = selectedQuiz.questions[questionIndex];
+      const buttons = [...$("#quizPanel").querySelectorAll("[data-answer]")];
+      buttons.forEach((button) => {
+        button.disabled = true;
+        if (Number(button.dataset.answer) === question.correct) button.classList.add("correct");
+      });
+      if (choice === question.correct) {
+        score += 1;
+        $("#quizFeedback").textContent = "That's right! Nice one ✨";
+      } else {
+        buttons[choice].classList.add("incorrect");
+        $("#quizFeedback").textContent = "Not quite — the highlighted answer is the right one.";
+      }
+      $("#nextQuestion").disabled = false;
+      $("#nextQuestion").textContent = questionIndex === selectedQuiz.questions.length - 1 ? "See my score →" : "Next question →";
+    }
+
+    function advanceQuiz() {
+      if (questionIndex < selectedQuiz.questions.length - 1) {
+        questionIndex += 1;
+        renderQuestion();
+        return;
+      }
+      const result = { topic: selectedQuiz.name, score, date: new Date().toISOString() };
+      const users = getUsers();
+      const storedUser = users[activeUser.email] || activeUser;
+      storedUser.results = [...(Array.isArray(storedUser.results) ? storedUser.results : []), result];
+      if (!persistProfile(storedUser)) return;
+      const message = score === 5 ? "A perfect round! You really know your stuff." : score >= 3 ? "Nicely done! Your curiosity is paying off." : "Good first round. Every question is a chance to learn something new.";
+      $("#quizPanel").innerHTML = `<div class="result"><div class="result-emoji">${score === 5 ? "🏆" : score >= 3 ? "✨" : "🌱"}</div><h3>${score} out of 5 — ${score === 5 ? "brilliant!" : score >= 3 ? "well played!" : "nice try!"}</h3><p>${message}<br>${esc(selectedQuiz.name)} quiz</p><button class="button" id="playAgain">Play this quiz again</button> &nbsp; <button class="button button-outline" id="chooseAnother">Choose another topic</button></div>`;
+      $("#playAgain").addEventListener("click", () => startQuiz(quizzes.indexOf(selectedQuiz)));
+      $("#chooseAnother").addEventListener("click", closeQuiz);
+    }
+
+    function closeQuiz() {
+      $("#quizPanel").classList.remove("visible");
+      $("#quizPanel").innerHTML = "";
+      selectedQuiz = null;
+    }
+
+    function normalizeEmail(value) { return value.trim().toLowerCase(); }
+
+    $("#authForm").addEventListener("submit", (event) => {
+      event.preventDefault();
+      $("#formError").textContent = "";
+      const email = normalizeEmail($("#emailInput").value);
+      const users = getUsers();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        $("#formError").textContent = "Please enter a valid email address.";
+        $("#emailInput").focus();
+        return;
+      }
+      if (authMode === "login") {
+        if (!users[email]) {
+          $("#formError").textContent = "We couldn't find that profile in this browser. Create a free profile to get started.";
+          return;
+        }
+        localStorage.setItem(activeKey, email);
+        activeUser = users[email];
+        closeAuth();
+        renderUser();
+        return;
+      }
+      const name = $("#nameInput").value.trim();
+      if (!name || name.length > 40) {
+        $("#formError").textContent = "Please enter a name between 1 and 40 characters.";
+        $("#nameInput").focus();
+        return;
+      }
+      if (authMode === "register" && users[email]) {
+        $("#formError").textContent = "A profile with that email already exists in this browser. Try logging in instead.";
+        return;
+      }
+      const previous = users[email];
+      const profile = authMode === "profile"
+        ? { ...activeUser, name, photo: selectedPhoto || activeUser.photo || "" }
+        : { name, email, photo: selectedPhoto, results: previous ? previous.results : [] };
+      if (persistProfile(profile)) {
+        closeAuth();
+      }
+    });
+
+    $("#pictureInput").addEventListener("change", () => {
+      const file = $("#pictureInput").files[0];
+      if (!file) return;
+      if (!file.type.startsWith("image/")) {
+        $("#formError").textContent = "Please choose an image file.";
+        $("#pictureInput").value = "";
+        return;
+      }
+      if (file.size > 8 * 1024 * 1024) {
+        $("#formError").textContent = "That photo is a bit large. Please choose an image under 8 MB.";
+        $("#pictureInput").value = "";
+        return;
+      }
+      const reader = new FileReader();
+      reader.onerror = () => { $("#formError").textContent = "We couldn't read that photo. Please try another image."; };
+      reader.onload = () => {
+        const image = new Image();
+        image.onerror = () => { $("#formError").textContent = "We couldn't open that photo. Please try another image."; };
+        image.onload = () => {
+          const scale = Math.min(1, 320 / Math.max(image.width, image.height));
+          const canvas = document.createElement("canvas");
+          canvas.width = Math.max(1, Math.round(image.width * scale));
+          canvas.height = Math.max(1, Math.round(image.height * scale));
+          canvas.getContext("2d").drawImage(image, 0, 0, canvas.width, canvas.height);
+          selectedPhoto = canvas.toDataURL("image/jpeg", .78);
+          $("#picturePreview").innerHTML = `<img src="${selectedPhoto}" alt="Selected profile photo">`;
+          $("#formError").textContent = "";
+        };
+        image.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    $("#brandHome").addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+    $("#heroCta").addEventListener("click", () => {
+      if (!activeUser) openAuth("register");
+      else $("#quizzes").scrollIntoView({ behavior: "smooth" });
+    });
+    $("#browseCta").addEventListener("click", () => $("#quizzes").scrollIntoView({ behavior: "smooth" }));
+    $("#allTopicsButton").addEventListener("click", () => $("#categoryGrid").scrollIntoView({ behavior: "smooth", block: "center" }));
+    $("#loginButton").addEventListener("click", () => openAuth("login"));
+    $("#signupButton").addEventListener("click", () => openAuth("register"));
+    $("#modalClose").addEventListener("click", closeAuth);
+    $("#authBackdrop").addEventListener("click", (event) => { if (event.target === $("#authBackdrop")) closeAuth(); });
+    document.addEventListener("keydown", (event) => { if (event.key === "Escape") closeAuth(); });
+
+    const savedEmail = localStorage.getItem(activeKey);
+    const savedUsers = getUsers();
+    if (savedEmail && savedUsers[savedEmail]) activeUser = savedUsers[savedEmail];
+    renderUser();
+    renderCategories();
+  </script>
+</body>
+</html>
